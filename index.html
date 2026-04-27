@@ -446,53 +446,64 @@ letter-spacing: 0.14em;
 text-transform: uppercase;
 color: var(–ink-muted);
 margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 6px;
 }
 
-.reverse-row { display: flex; align-items: center; gap: 10px; }
+.reverse-title .dot {
+width: 7px; height: 7px;
+border-radius: 50%;
+flex-shrink: 0;
+}
 
 .reverse-input {
-flex: 1;
+width: 100%;
 background: white;
-border: 1.5px solid var(–border);
-border-radius: 12px;
-padding: 13px 15px;
+border: 2px solid var(–border);
+border-radius: 16px;
+padding: 20px 78px 20px 20px;
 font-family: ‘DM Sans’, sans-serif;
-font-size: 20px;
+font-size: 34px;
 font-weight: 300;
 color: var(–ink);
 outline: none;
-transition: border-color 0.2s;
+transition: border-color 0.2s, box-shadow 0.2s;
 -webkit-appearance: none;
 }
 
-.reverse-input::placeholder { color: var(–ink-muted); opacity: 0.4; }
+.reverse-input::placeholder { color: var(–ink-muted); opacity: 0.3; }
 
 .reverse-result-box {
-flex: 1;
 background: var(–cream-dark);
-border-radius: 12px;
-padding: 12px 14px;
+border-radius: 16px;
+padding: 20px;
 display: flex;
 align-items: center;
 justify-content: space-between;
+transition: all 0.3s ease;
+border: 2px solid transparent;
+min-height: 82px;
+margin-top: 12px;
 }
 
 .reverse-result-inner { text-align: left; }
 
 .reverse-result-label {
-font-size: 9px;
+font-size: 10px;
 font-weight: 500;
-letter-spacing: 0.12em;
+letter-spacing: 0.18em;
 text-transform: uppercase;
 color: var(–ink-muted);
-margin-bottom: 1px;
+margin-bottom: 2px;
 }
 
 .reverse-result-val {
 font-family: ‘Cormorant Garamond’, serif;
-font-size: 21px;
-font-weight: 400;
-color: var(–ink-soft);
+font-size: 40px;
+font-weight: 300;
+color: var(–ink-muted);
+transition: color 0.3s;
 }
 
 /* ── TOAST ── */
@@ -706,25 +717,29 @@ function buildPanels() {
         <div class="divider"></div>
 
         <div class="reverse-section">
-          <div class="reverse-title">Reverse — ${p.cash} → ${p.futures} equivalent</div>
-          <div class="reverse-row">
+          <div class="reverse-title">
+            <span class="dot" style="background:var(--ink-muted)"></span>
+            Reverse — ${p.cash} → ${p.futures}
+          </div>
+          <div class="big-input-wrap">
             <input class="reverse-input" id="cTarget${i}" type="number" inputmode="decimal"
               step="${p.cashStep}" placeholder="${p.cash} price" autocomplete="off"
-              onfocus="this.style.borderColor='${p.color}'" onblur="this.style.borderColor=''"
+              onfocus="this.style.borderColor='${p.color}';this.style.boxShadow='0 0 0 4px ${p.pale}'"
+              onblur="this.style.borderColor='';this.style.boxShadow=''"
               oninput="convertReverse(${i})">
-            <div class="reverse-result-box">
-              <div class="reverse-result-inner">
-                <div class="reverse-result-label">${p.futures} level</div>
-                <div class="reverse-result-val" id="revVal${i}">—</div>
-              </div>
-              <button class="copy-icon-btn" id="revCopy${i}" onclick="copyVal('revVal${i}')"
-                style="width:20px;height:20px;border:none;border-radius:5px;padding:0;">
-                <svg viewBox="0 0 24 24" style="stroke:${p.color}">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                </svg>
-              </button>
+            <span class="ticker-tag" style="background:${p.color}">${p.cash}</span>
+          </div>
+          <div class="reverse-result-box" id="revBox${i}">
+            <div class="reverse-result-inner">
+              <div class="reverse-result-label" id="revLabel${i}">${p.futures} level</div>
+              <div class="reverse-result-val" id="revVal${i}">—</div>
             </div>
+            <button class="copy-icon-btn" id="revCopy${i}" onclick="copyVal('revVal${i}')">
+              <svg viewBox="0 0 24 24" style="stroke:${p.color}">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -816,13 +831,19 @@ function convert(i) {
 
 function convertReverse(i) {
   const cT = parseFloat(document.getElementById(`cTarget${i}`).value);
+  const p = PAIRS[i];
   const el = document.getElementById(`revVal${i}`);
   const btn = document.getElementById(`revCopy${i}`);
+  const box = document.getElementById(`revBox${i}`);
   if (!isNaN(cT) && spreads[i] !== null) {
     el.textContent = (cT - spreads[i]).toFixed(2);
+    el.style.color = p.color;
+    box.style.cssText = `background:${p.pale};border-color:${p.border};border-width:2px;border-style:solid;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;min-height:82px;margin-top:12px;transition:all 0.3s`;
     btn.classList.add('visible');
   } else {
     el.textContent = '—';
+    el.style.color = '';
+    box.style.cssText = '';
     btn.classList.remove('visible');
   }
 }
@@ -836,6 +857,12 @@ function resetResult(i) {
   if (dot) dot.style.background = '';
   document.getElementById(`rSub${i}`).textContent = '';
   document.getElementById(`rCopy${i}`).classList.remove('visible');
+  const revEl = document.getElementById(`revVal${i}`);
+  if (revEl) { revEl.textContent = '—'; revEl.style.color = ''; }
+  const revBox = document.getElementById(`revBox${i}`);
+  if (revBox) revBox.style.cssText = '';
+  const revBtn = document.getElementById(`revCopy${i}`);
+  if (revBtn) revBtn.classList.remove('visible');
 }
 
 // ── COPY ──
