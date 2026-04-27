@@ -18,6 +18,8 @@
 
 <!-- Optional: For Android Chrome -->
 <link rel="manifest" href="manifest.json">
+
+
   
   <style>
   :root {
@@ -63,9 +65,6 @@ padding-top: env(safe-area-inset-top);
 display: flex;
 border-bottom: 1px solid var(–border);
 background: var(–cream);
-position: sticky;
-top: 0;
-z-index: 10;
 padding-top: env(safe-area-inset-top);
 }
 
@@ -323,7 +322,7 @@ width: 100%;
 background: white;
 border: 2px solid var(–border);
 border-radius: 16px;
-padding: 20px 78px 20px 20px;
+padding: 17px 78px 17px 20px;
 font-family: ‘DM Sans’, sans-serif;
 font-size: 34px;
 font-weight: 300;
@@ -391,13 +390,13 @@ flex-shrink: 0;
 .result-box {
 background: var(–cream-dark);
 border-radius: 16px;
-padding: 20px;
+padding: 17px 20px;
 display: flex;
 align-items: center;
 justify-content: space-between;
 transition: all 0.3s ease;
 border: 2px solid transparent;
-min-height: 82px;
+min-height: unset;
 }
 
 .result-price {
@@ -462,7 +461,7 @@ width: 100%;
 background: white;
 border: 2px solid var(–border);
 border-radius: 16px;
-padding: 20px 78px 20px 20px;
+padding: 17px 78px 17px 20px;
 font-family: ‘DM Sans’, sans-serif;
 font-size: 34px;
 font-weight: 300;
@@ -477,13 +476,13 @@ transition: border-color 0.2s, box-shadow 0.2s;
 .reverse-result-box {
 background: var(–cream-dark);
 border-radius: 16px;
-padding: 20px;
+padding: 17px 20px;
 display: flex;
 align-items: center;
 justify-content: space-between;
 transition: all 0.3s ease;
 border: 2px solid transparent;
-min-height: 82px;
+min-height: unset;
 margin-top: 12px;
 }
 
@@ -819,7 +818,7 @@ function convert(i) {
     const priceEl = document.getElementById(`rPrice${i}`);
     priceEl.textContent = result.toFixed(2);
     priceEl.style.color = p.color;
-    document.getElementById(`rBox${i}`).style.cssText = `background:${p.pale};border-color:${p.border};border-width:2px;border-style:solid;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;min-height:82px;transition:all 0.3s`;
+    document.getElementById(`rBox${i}`).style.cssText = `background:${p.pale};border-color:${p.border};border-width:2px;border-style:solid;border-radius:16px;padding:17px 20px;display:flex;align-items:center;justify-content:space-between;transition:all 0.3s`;
     const dot = document.querySelector(`#rLabel${i} .dot`);
     if (dot) dot.style.background = p.color;
     document.getElementById(`rSub${i}`).textContent = `${fT.toFixed(2)} + ${s >= 0 ? '+' : ''}${s.toFixed(2)} spread`;
@@ -838,7 +837,7 @@ function convertReverse(i) {
   if (!isNaN(cT) && spreads[i] !== null) {
     el.textContent = (cT - spreads[i]).toFixed(2);
     el.style.color = p.color;
-    box.style.cssText = `background:${p.pale};border-color:${p.border};border-width:2px;border-style:solid;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;min-height:82px;margin-top:12px;transition:all 0.3s`;
+    box.style.cssText = `background:${p.pale};border-color:${p.border};border-width:2px;border-style:solid;border-radius:16px;padding:17px 20px;display:flex;align-items:center;justify-content:space-between;margin-top:12px;transition:all 0.3s`;
     btn.classList.add('visible');
   } else {
     el.textContent = '—';
